@@ -35,50 +35,50 @@ if tmux has-session -t "$SESSION" 2>/dev/null; then
     exec ghostty -e tmux attach-session -t "$SESSION"
 fi
 
-# 读取 tmux base-index（配置改为从 1 开始）
-WIN=$(tmux show-options -gv base-index 2>/dev/null || echo 1)
-PANE=$(tmux show-options -gv pane-base-index 2>/dev/null || echo 1)
-
 # 布局
-#   ┌──────────────────┬──────────────────┐
-#   │                  │      Yazi        │
-#   │   Claude Code    │   (右, 上 70%)   │
-#   │     (左全高)     ├──────────────────┤
-#   │                  │      CMD         │
-#   │                  │   (右, 下 30%)   │
-#   └──────────────────┴──────────────────┘
+#   ┌──────────┬──────────┬──────────┐
+#   │          │  broot   │   tig    │
+#   │  Claude  ├──────────┴──────────┤
+#   │          │         CMD         │
+#   └──────────┴─────────────────────┘
 
-# 分割后 pane 编号的实际规律：
-#   新建 session     → pane 1 (全屏)
-#   h-split pane1    → pane1(左 Claude), pane2(右)
-#   v-split pane2    → pane2(右上 Yazi), pane3(右下 CMD 新增)
-P_CLAUDE=$PANE          # 左: Claude Code  (pane 1)
-P_YAZI=$((PANE + 1))    # 右上: Yazi       (pane 2)
-P_CMD=$((PANE + 2))     # 右下: CMD shell  (pane 3, v-split 右侧后新增)
-
+# 使用 pane_id 而非索引，避免 tmux 版本差异导致的编号错位
 tmux new-session -d -s "$SESSION" -c "$PROJECT_DIR"
+P_CLAUDE=$(tmux display-message -t "$SESSION" -p '#{pane_id}')
 
-# Step 1: 水平分割，右侧 50%（pane1 左, pane2 右）
-tmux split-window -h -t "$SESSION:$WIN.$P_CLAUDE" -p 50 -c "$PROJECT_DIR"
+# Step 1: 水平分割，右侧 50% → 右列（稍后再分）
+P_RIGHT=$(tmux split-window -h -l 50% -P -F '#{pane_id}' \
+    -t "$P_CLAUDE" -c "$PROJECT_DIR")
 
-# Step 2: 垂直分割右侧，下面 30% 给 CMD
-#   → pane2(右上 Yazi), pane3(右下 CMD 新增)
-tmux split-window -v -t "$SESSION:$WIN.$P_YAZI" -p 30 -c "$PROJECT_DIR"
+# Step 2: 垂直分割右列，下面 30% 给 CMD
+P_CMD=$(tmux split-window -v -l 30% -P -F '#{pane_id}' \
+    -t "$P_RIGHT" -c "$PROJECT_DIR")
 
-# 右上: Yazi 文件管理器（P_YAZI = pane2）
-tmux send-keys -t "$SESSION:$WIN.$P_YAZI" \
-    "export PATH=\"$HOME/.cargo/bin:\$PATH\" && yazi \"$PROJECT_DIR\"" C-m
+# Step 3: 水平分割右上（broot），右半边给 tig
+P_BROOT=$P_RIGHT
+P_TIG=$(tmux split-window -h -l 65% -P -F '#{pane_id}' \
+    -t "$P_BROOT" -c "$PROJECT_DIR")
 
-# 右下: CMD shell（P_CMD = pane3）停在项目目录
-tmux send-keys -t "$SESSION:$WIN.$P_CMD" "cd \"$PROJECT_DIR\" && clear" C-m
+# 右上左: broot 树形文件管理器
+tmux send-keys -t "$P_BROOT" "broot \"$PROJECT_DIR\"" C-m
+
+# 右上右: tig 查看 git history
+tmux send-keys -t "$P_TIG" "cd \"$PROJECT_DIR\" && tig --all" C-m
+
+# 右下: CMD shell
+tmux send-keys -t "$P_CMD" "cd \"$PROJECT_DIR\" && clear" C-m
+
+# 窗口 resize 时按比例重算，避免 tig/CMD 被钉死导致 broot 吞掉增量
+tmux set-hook -t "$SESSION" window-resized \
+    "resize-pane -t $P_CLAUDE -x 50% ; resize-pane -t $P_CMD -y 30% ; resize-pane -t $P_TIG -x 33%"
 
 # 焦点回到左侧，布局稳定后再启动 Claude（避免 TUI 渲染错位）
-tmux select-pane -t "$SESSION:$WIN.$P_CLAUDE"
+tmux select-pane -t "$P_CLAUDE"
 
 # 设置 PATH 确保 bun 等工具可被插件（如 Telegram MCP server）找到
-tmux send-keys -t "$SESSION:$WIN.$P_CLAUDE" "export PATH=\"$HOME/.local/bin:$PATH\"" C-m
+tmux send-keys -t "$P_CLAUDE" "export PATH=\"$HOME/.local/bin:$PATH\"" C-m
 
 # 最后启动 Claude Code（确保终端尺寸已固定）
-tmux send-keys -t "$SESSION:$WIN.$P_CLAUDE" "claude" Space "--dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official" C-m
+tmux send-keys -t "$P_CLAUDE" "claude" Space "--dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official" C-m
 
 exec ghostty -e tmux attach-session -t "$SESSION"
