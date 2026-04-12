@@ -37,7 +37,7 @@ fi
 
 # 布局
 #   ┌──────────┬──────────┬──────────┐
-#   │          │  broot   │   tig    │
+#   │          │  broot   │ lazygit  │
 #   │  Claude  ├──────────┴──────────┤
 #   │          │         CMD         │
 #   └──────────┴─────────────────────┘
@@ -47,30 +47,30 @@ tmux new-session -d -s "$SESSION" -c "$PROJECT_DIR"
 P_CLAUDE=$(tmux display-message -t "$SESSION" -p '#{pane_id}')
 
 # Step 1: 水平分割，右侧 50% → 右列（稍后再分）
-P_RIGHT=$(tmux split-window -h -l 50% -P -F '#{pane_id}' \
+P_RIGHT=$(tmux split-window -h -l 60% -P -F '#{pane_id}' \
     -t "$P_CLAUDE" -c "$PROJECT_DIR")
 
 # Step 2: 垂直分割右列，下面 30% 给 CMD
 P_CMD=$(tmux split-window -v -l 30% -P -F '#{pane_id}' \
     -t "$P_RIGHT" -c "$PROJECT_DIR")
 
-# Step 3: 水平分割右上（broot），右半边给 tig
+# Step 3: 水平分割右上（broot），右半边给 lazygit
 P_BROOT=$P_RIGHT
-P_TIG=$(tmux split-window -h -l 65% -P -F '#{pane_id}' \
+P_LAZYGIT=$(tmux split-window -h -l 75% -P -F '#{pane_id}' \
     -t "$P_BROOT" -c "$PROJECT_DIR")
 
 # 右上左: broot 树形文件管理器
 tmux send-keys -t "$P_BROOT" "broot \"$PROJECT_DIR\"" C-m
 
-# 右上右: tig 查看 git history
-tmux send-keys -t "$P_TIG" "cd \"$PROJECT_DIR\" && tig --all" C-m
+# 右上右: lazygit（会自动监听文件变化刷新）
+tmux send-keys -t "$P_LAZYGIT" "cd \"$PROJECT_DIR\" && lazygit" C-m
 
 # 右下: CMD shell
 tmux send-keys -t "$P_CMD" "cd \"$PROJECT_DIR\" && clear" C-m
 
-# 窗口 resize 时按比例重算，避免 tig/CMD 被钉死导致 broot 吞掉增量
+# 窗口 resize 时按比例重算，避免 lazygit/CMD 被钉死导致 broot 吞掉增量
 tmux set-hook -t "$SESSION" window-resized \
-    "resize-pane -t $P_CLAUDE -x 50% ; resize-pane -t $P_CMD -y 30% ; resize-pane -t $P_TIG -x 33%"
+    "resize-pane -t $P_CLAUDE -x 40% ; resize-pane -t $P_CMD -y 30% ; resize-pane -t $P_LAZYGIT -x 45%"
 
 # 焦点回到左侧，布局稳定后再启动 Claude（避免 TUI 渲染错位）
 tmux select-pane -t "$P_CLAUDE"
