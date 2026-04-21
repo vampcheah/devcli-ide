@@ -61,5 +61,5 @@ CLI_ARGS="--dangerously-skip-permissions --channels plugin:telegram@claude-plugi
 
 - [Ghostty](https://ghostty.org)
 - tmux
-- [kudzu](https://github.com/francoischeah/kudzu)（或其他文件管理器，改 `dev-cli.sh` 对应行）
+- [kudzu](https://github.com/vampcheah/kudzu)（或其他文件管理器，改 `dev-cli.sh` 对应行）
 - lazygit

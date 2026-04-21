@@ -61,5 +61,5 @@ To change the menu label: update the `Name=` field in the `.desktop` file and re
 
 - [Ghostty](https://ghostty.org)
 - tmux
-- [kudzu](https://github.com/francoischeah/kudzu) (or another file manager — edit the relevant line in `dev-cli.sh`)
+- [kudzu](https://github.com/vampcheah/kudzu) (or another file manager — edit the relevant line in `dev-cli.sh`)
 - lazygit
