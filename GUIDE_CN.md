@@ -6,7 +6,7 @@
 | ------- | ----------------------------------- |
 | Ghostty | `~/.config/ghostty/config`          |
 | tmux    | `~/.tmux.conf`                      |
-| 开发脚本 | `~/Documents/app/ghostty/dev-claude.sh` |
+| 开发脚本 | `~/Documents/app/ghostty/dev-cli.sh` |
 
 ---
 
@@ -149,22 +149,47 @@
 
 ---
 
-## dev-claude.sh 开发环境
+## dev-cli.sh 开发环境
 
-运行 `dev-claude.sh` 会启动如下布局：
+运行 `dev-cli.sh [项目路径]` 会在 Ghostty 内启动 tmux session，布局如下：
 
 ```
-┌──────────────────┬──────────────┐
-│                  │              │
-│   Claude Code    │    Shell     │
-│    (左 60%)      │   (右 40%)   │
-│                  │              │
-└──────────────────┴──────────────┘
+┌──────────┬──────────┬──────────┐
+│          │  kudzu   │ lazygit  │
+│   CLI    ├──────────┴──────────┤
+│ (左 40%) │         CMD         │
+└──────────┴─────────────────────┘
 ```
 
-- 左侧自动启动 `claude --dangerously-skip-permissions`
-- 右侧 Shell 显示 git 状态
-- 用 `Alt+←` / `Alt+→` 在两个 Pane 间切换
+- **左**：自动启动 AI CLI（由脚本顶部变量控制）
+- **右上左**：kudzu 树形文件管理器
+- **右上右**：lazygit
+- **右下**：普通 Shell
+- 用 `Alt+←/→/↑/↓` 在 Pane 间切换
+- 同一项目路径重复运行会直接附加到已有 session
+
+### 切换 CLI
+
+脚本顶部两个变量，改这里即可切换到其他 AI CLI：
+
+```bash
+CLI_CMD="claude"
+CLI_ARGS="--dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official"
+```
+
+---
+
+## DevCli IDE 右键菜单
+
+在 Nautilus 文件夹上右键会出现"DevCli IDE"选项，底层调用 `dev-cli.sh`。配置位于两处：
+
+| 配置文件 | 路径 | 作用 |
+| -------- | ---- | ---- |
+| `.desktop` 文件 | `~/.local/share/applications/claude-ide.desktop` | 注册为目录的"用其他应用打开"选项 |
+| Nautilus 脚本 | `~/.local/share/nautilus/scripts/DevCli IDE` | 出现在右键 → "脚本" 子菜单 |
+
+- 修改菜单显示名称：改 `.desktop` 的 `Name=` 字段，并重命名 Nautilus 脚本文件
+- 修改启动逻辑：只需改 `dev-cli.sh`
 
 ---
 

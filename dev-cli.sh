@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 #
-# dev-claude.sh — 在 Ghostty 中启动 tmux + Claude Code 开发环境
+# dev-cli.sh — 在 Ghostty 中启动 tmux + AI CLI 开发环境
 #
 # 用法:
-#   dev-claude.sh                    # 在当前目录启动
-#   dev-claude.sh /path/to/project   # 在指定项目目录启动
+#   dev-cli.sh                    # 在当前目录启动
+#   dev-cli.sh /path/to/project   # 在指定项目目录启动
 #
 
 set -euo pipefail
+
+CLI_CMD="claude"
+CLI_ARGS="--dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official"
 
 PROJECT_DIR="${1:-$(pwd)}"
 PROJECT_DIR="$(realpath "$PROJECT_DIR")"
@@ -18,7 +21,8 @@ if [[ ! -d "$PROJECT_DIR" ]]; then
 fi
 
 PROJECT_NAME="$(basename "$PROJECT_DIR")"
-SESSION="dev-${PROJECT_NAME}"
+PATH_HASH="$(echo -n "$PROJECT_DIR" | md5sum | cut -c1-6)"
+SESSION="dev-${PROJECT_NAME}-${PATH_HASH}"
 
 # 如果已经在 tmux 内部，直接切换
 if [[ -n "${TMUX:-}" ]]; then
@@ -37,7 +41,7 @@ fi
 
 # 布局
 #   ┌──────────┬──────────┬──────────┐
-#   │          │  broot   │ lazygit  │
+#   │          │  kudzu   │ lazygit  │
 #   │  Claude  ├──────────┴──────────┤
 #   │          │         CMD         │
 #   └──────────┴─────────────────────┘
@@ -54,13 +58,13 @@ P_RIGHT=$(tmux split-window -h -l 60% -P -F '#{pane_id}' \
 P_CMD=$(tmux split-window -v -l 30% -P -F '#{pane_id}' \
     -t "$P_RIGHT" -c "$PROJECT_DIR")
 
-# Step 3: 水平分割右上（broot），右半边给 lazygit
-P_BROOT=$P_RIGHT
+# Step 3: 水平分割右上（kudzu），右半边给 lazygit
+P_KUDZU=$P_RIGHT
 P_LAZYGIT=$(tmux split-window -h -l 75% -P -F '#{pane_id}' \
-    -t "$P_BROOT" -c "$PROJECT_DIR")
+    -t "$P_KUDZU" -c "$PROJECT_DIR")
 
-# 右上左: broot 树形文件管理器
-tmux send-keys -t "$P_BROOT" "broot \"$PROJECT_DIR\"" C-m
+# 右上左: kudzu 树形文件管理器
+tmux send-keys -t "$P_KUDZU" "kudzu \"$PROJECT_DIR\"" C-m
 
 # 右上右: lazygit（会自动监听文件变化刷新）
 tmux send-keys -t "$P_LAZYGIT" "cd \"$PROJECT_DIR\" && lazygit" C-m
@@ -68,7 +72,7 @@ tmux send-keys -t "$P_LAZYGIT" "cd \"$PROJECT_DIR\" && lazygit" C-m
 # 右下: CMD shell
 tmux send-keys -t "$P_CMD" "cd \"$PROJECT_DIR\" && clear" C-m
 
-# 窗口 resize 时按比例重算，避免 lazygit/CMD 被钉死导致 broot 吞掉增量
+# 窗口 resize 时按比例重算，避免 lazygit/CMD 被钉死导致 kudzu 吞掉增量
 tmux set-hook -t "$SESSION" window-resized \
     "resize-pane -t $P_CLAUDE -x 40% ; resize-pane -t $P_CMD -y 30% ; resize-pane -t $P_LAZYGIT -x 45%"
 
@@ -78,7 +82,7 @@ tmux select-pane -t "$P_CLAUDE"
 # 设置 PATH 确保 bun 等工具可被插件（如 Telegram MCP server）找到
 tmux send-keys -t "$P_CLAUDE" "export PATH=\"$HOME/.local/bin:$PATH\"" C-m
 
-# 最后启动 Claude Code（确保终端尺寸已固定）
-tmux send-keys -t "$P_CLAUDE" "claude" Space "--dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official" C-m
+# 最后启动 CLI（确保终端尺寸已固定）
+tmux send-keys -t "$P_CLAUDE" "$CLI_CMD $CLI_ARGS" C-m
 
 exec ghostty -e tmux attach-session -t "$SESSION"
