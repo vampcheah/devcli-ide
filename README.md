@@ -1,4 +1,4 @@
-# ghostty-devenv
+# ghostty-devcli-ide
 
 A Ghostty + tmux AI CLI development environment launcher. Integrates with the Nautilus right-click menu to open a full dev environment in any project directory with a single click.
 

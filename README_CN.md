@@ -1,4 +1,4 @@
-# ghostty-devenv
+# ghostty-devcli-ide
 
 Ghostty + tmux 的 AI CLI 开发环境启动器，配合 Nautilus 右键菜单，在任意项目目录一键打开。
 
