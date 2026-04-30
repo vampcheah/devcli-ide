@@ -155,7 +155,7 @@ Run `dev-cli.sh [project-path]` to start a tmux session inside Ghostty with the 
 
 ```
 ┌──────────┬──────────┬──────────┐
-│          │  kudzu   │ lazygit  │
+│          │  kudzu   │ gitoto   │
 │   CLI    ├──────────┴──────────┤
 │ (40% L)  │         CMD         │
 └──────────┴─────────────────────┘
@@ -163,7 +163,7 @@ Run `dev-cli.sh [project-path]` to start a tmux session inside Ghostty with the 
 
 - **Left**: AI CLI launched automatically (controlled by variables at the top of the script)
 - **Top-right left**: kudzu tree file manager
-- **Top-right right**: lazygit
+- **Top-right right**: gitoto, launched as `gitoto --root <project-path>`
 - **Bottom-right**: Plain shell
 - Use `Alt+←/→/↑/↓` to switch between panes
 - Running the script again for the same path attaches to the existing session
