@@ -69,7 +69,7 @@ P_GITOTO=$(tmux split-window -h -l 75% -P -F '#{pane_id}' \
 tmux send-keys -t "$P_KUDZU" "kudzu \"$PROJECT_DIR\"" C-m
 
 # 右上右: gitoto（以当前项目目录作为扫描根目录）
-tmux send-keys -t "$P_GITOTO" "cd \"$PROJECT_DIR\" && gitoto --root \"$PROJECT_DIR\"" C-m
+tmux send-keys -t "$P_GITOTO" "cd \"$PROJECT_DIR\" && GIT_TERMINAL_PROMPT=0 gitoto --root \"$PROJECT_DIR\"" C-m
 
 # 右下: CMD shell
 tmux send-keys -t "$P_CMD" "cd \"$PROJECT_DIR\" && clear" C-m
