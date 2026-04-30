@@ -9,8 +9,10 @@
 
 set -euo pipefail
 
-CLI_CMD="claude"
-CLI_ARGS="--dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official"
+# claude
+# --dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official
+CLI_CMD="codex"
+CLI_ARGS="--dangerously-bypass-approvals-and-sandbox"
 
 PROJECT_DIR="${1:-$(pwd)}"
 PROJECT_DIR="$(realpath "$PROJECT_DIR")"
