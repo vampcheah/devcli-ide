@@ -170,6 +170,13 @@ Run `dev-cli.sh [project-path]` to start a tmux session inside Ghostty with the 
 
 ### Switching the CLI
 
+The default Codex configuration disables alternate screen mode so the left pane keeps tmux scrollback history:
+
+```bash
+CLI_CMD="codex"
+CLI_ARGS="--no-alt-screen --dangerously-bypass-approvals-and-sandbox"
+```
+
 Two variables at the top of the script — change these to switch to a different AI CLI:
 
 ```bash

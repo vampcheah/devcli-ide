@@ -12,7 +12,7 @@ A Ghostty + tmux AI CLI development environment launcher. Integrates with the Na
 └──────────┴─────────────────────┘
 ```
 
-- **Left**: AI CLI (Claude Code by default)
+- **Left**: AI CLI (Codex by default, using `--no-alt-screen` to keep tmux scrollback)
 - **Top-right left**: kudzu tree file manager
 - **Top-right right**: gitoto, launched as `gitoto --root <project-path>`
 - **Bottom-right**: Shell
@@ -33,7 +33,14 @@ Running the script again for the same project path attaches to the existing tmux
 
 ## Switching the AI CLI
 
-Edit the top two lines of `dev-cli.sh`:
+Default configuration:
+
+```bash
+CLI_CMD="codex"
+CLI_ARGS="--no-alt-screen --dangerously-bypass-approvals-and-sandbox"
+```
+
+To switch to Claude Code, edit the top two lines of `dev-cli.sh`:
 
 ```bash
 CLI_CMD="claude"

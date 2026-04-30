@@ -12,7 +12,7 @@ set -euo pipefail
 # claude
 # --dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official
 CLI_CMD="codex"
-CLI_ARGS="--dangerously-bypass-approvals-and-sandbox"
+CLI_ARGS="--no-alt-screen --dangerously-bypass-approvals-and-sandbox"
 
 PROJECT_DIR="${1:-$(pwd)}"
 PROJECT_DIR="$(realpath "$PROJECT_DIR")"
@@ -44,7 +44,7 @@ fi
 # 布局
 #   ┌──────────┬──────────┬──────────┐
 #   │          │  kudzu   │ gitoto   │
-#   │  Claude  ├──────────┴──────────┤
+#   │   CLI    ├──────────┴──────────┤
 #   │          │         CMD         │
 #   └──────────┴─────────────────────┘
 
@@ -78,7 +78,7 @@ tmux send-keys -t "$P_CMD" "cd \"$PROJECT_DIR\" && clear" C-m
 tmux set-hook -t "$SESSION" window-resized \
     "resize-pane -t $P_CLAUDE -x 40% ; resize-pane -t $P_CMD -y 30% ; resize-pane -t $P_GITOTO -x 45%"
 
-# 焦点回到左侧，布局稳定后再启动 Claude（避免 TUI 渲染错位）
+# 焦点回到左侧，布局稳定后再启动 CLI（避免 TUI 渲染错位）
 tmux select-pane -t "$P_CLAUDE"
 
 # 设置 PATH 确保 bun 等工具可被插件（如 Telegram MCP server）找到

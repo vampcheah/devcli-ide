@@ -170,6 +170,13 @@
 
 ### 切换 CLI
 
+默认 Codex 配置会关闭 alternate screen，让左侧 pane 可以保留 tmux 滚动历史：
+
+```bash
+CLI_CMD="codex"
+CLI_ARGS="--no-alt-screen --dangerously-bypass-approvals-and-sandbox"
+```
+
 脚本顶部两个变量，改这里即可切换到其他 AI CLI：
 
 ```bash
