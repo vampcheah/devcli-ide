@@ -154,16 +154,16 @@ Double-tap `Ctrl+A` to pass it through to the underlying program (e.g. jump to s
 Run `dev-cli.sh [project-path]` to start a tmux session inside Ghostty with the following layout:
 
 ```
-┌──────────┬──────────┬──────────┐
-│          │  kudzu   │ gitoto   │
-│   CLI    ├──────────┴──────────┤
-│ (40% L)  │         CMD         │
-└──────────┴─────────────────────┘
+┌──────────┬────────┬──────────────┐
+│          │ kudzu  │    gitoto    │
+│   CLI    ├────────┴──────────────┤
+│ (50% L)  │         CMD         │
+└──────────┴───────────────────────┘
 ```
 
 - **Left**: AI CLI launched automatically (controlled by variables at the top of the script)
-- **Top-right left**: kudzu tree file manager
-- **Top-right right**: gitoto, launched as `gitoto --root <project-path>`
+- **Top-right left**: kudzu tree file manager, 35% of the top-right area
+- **Top-right right**: gitoto pane, 65% of the top-right area, launched as `gitoto --root <project-path>`
 - **Bottom-right**: Plain shell
 - Use `Alt+←/→/↑/↓` to switch between panes
 - Running the script again for the same path attaches to the existing session

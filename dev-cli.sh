@@ -60,9 +60,9 @@ P_RIGHT=$(tmux split-window -h -l 50% -P -F '#{pane_id}' \
 P_CMD=$(tmux split-window -v -l 30% -P -F '#{pane_id}' \
     -t "$P_RIGHT" -c "$PROJECT_DIR")
 
-# Step 3: 水平分割右上（kudzu），右半边给 gitoto
+# Step 3: 水平分割右上（kudzu），右侧 65% 给 gitoto
 P_KUDZU=$P_RIGHT
-P_GITOTO=$(tmux split-window -h -l 75% -P -F '#{pane_id}' \
+P_GITOTO=$(tmux split-window -h -l 65% -P -F '#{pane_id}' \
     -t "$P_KUDZU" -c "$PROJECT_DIR")
 
 # 右上左: kudzu 树形文件管理器
@@ -74,9 +74,10 @@ tmux send-keys -t "$P_GITOTO" "cd \"$PROJECT_DIR\" && GIT_TERMINAL_PROMPT=0 gito
 # 右下: CMD shell
 tmux send-keys -t "$P_CMD" "cd \"$PROJECT_DIR\" && clear" C-m
 
-# 窗口 resize 时按比例重算，避免 gitoto/CMD 被钉死导致 kudzu 吞掉增量
+# 窗口 resize 时按比例重算，避免 gitoto/CMD 被钉死导致 kudzu 吞掉增量。
+# 右列占整窗 50%，gitoto 占整窗约 33%，因此右上区域内约为 65%。
 tmux set-hook -t "$SESSION" window-resized \
-    "resize-pane -t $P_CLAUDE -x 50% ; resize-pane -t $P_CMD -y 30% ; resize-pane -t $P_GITOTO -x 45%"
+    "resize-pane -t $P_CLAUDE -x 50% ; resize-pane -t $P_CMD -y 30% ; resize-pane -t $P_GITOTO -x 33%"
 
 # 焦点回到左侧，布局稳定后再启动 CLI（避免 TUI 渲染错位）
 tmux select-pane -t "$P_CLAUDE"

@@ -5,16 +5,16 @@ A Ghostty + tmux AI CLI development environment launcher. Integrates with the Na
 ## Layout
 
 ```
-┌──────────┬──────────┬──────────┐
-│          │  kudzu   │ gitoto   │
-│   CLI    ├──────────┴──────────┤
+┌──────────┬────────┬──────────────┐
+│          │ kudzu  │    gitoto    │
+│   CLI    ├────────┴──────────────┤
 │ (50% L)  │         CMD         │
-└──────────┴─────────────────────┘
+└──────────┴───────────────────────┘
 ```
 
 - **Left**: AI CLI (Codex by default, using `--no-alt-screen` to keep tmux scrollback)
-- **Top-right left**: kudzu tree file manager
-- **Top-right right**: gitoto, launched as `gitoto --root <project-path>`
+- **Top-right left**: kudzu tree file manager, 35% of the top-right area
+- **Top-right right**: gitoto pane, 65% of the top-right area, launched as `gitoto --root <project-path>`
 - **Bottom-right**: Shell
 
 ## Usage
