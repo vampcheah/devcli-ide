@@ -53,7 +53,7 @@ tmux new-session -d -s "$SESSION" -c "$PROJECT_DIR"
 P_CLAUDE=$(tmux display-message -t "$SESSION" -p '#{pane_id}')
 
 # Step 1: 水平分割，右侧 50% → 右列（稍后再分）
-P_RIGHT=$(tmux split-window -h -l 60% -P -F '#{pane_id}' \
+P_RIGHT=$(tmux split-window -h -l 50% -P -F '#{pane_id}' \
     -t "$P_CLAUDE" -c "$PROJECT_DIR")
 
 # Step 2: 垂直分割右列，下面 30% 给 CMD
@@ -76,7 +76,7 @@ tmux send-keys -t "$P_CMD" "cd \"$PROJECT_DIR\" && clear" C-m
 
 # 窗口 resize 时按比例重算，避免 gitoto/CMD 被钉死导致 kudzu 吞掉增量
 tmux set-hook -t "$SESSION" window-resized \
-    "resize-pane -t $P_CLAUDE -x 40% ; resize-pane -t $P_CMD -y 30% ; resize-pane -t $P_GITOTO -x 45%"
+    "resize-pane -t $P_CLAUDE -x 50% ; resize-pane -t $P_CMD -y 30% ; resize-pane -t $P_GITOTO -x 45%"
 
 # 焦点回到左侧，布局稳定后再启动 CLI（避免 TUI 渲染错位）
 tmux select-pane -t "$P_CLAUDE"

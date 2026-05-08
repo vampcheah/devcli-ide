@@ -8,7 +8,7 @@ A Ghostty + tmux AI CLI development environment launcher. Integrates with the Na
 ┌──────────┬──────────┬──────────┐
 │          │  kudzu   │ gitoto   │
 │   CLI    ├──────────┴──────────┤
-│ (40% L)  │         CMD         │
+│ (50% L)  │         CMD         │
 └──────────┴─────────────────────┘
 ```
 
