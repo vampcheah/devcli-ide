@@ -12,10 +12,11 @@ set -euo pipefail
 # claude
 # --dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official
 # codex
-# --no-alt-screen --dangerously-bypass-approvals-and-sandbox
+# --no-alt-screen --profile full
 # agy
-CLI_CMD="claude"
-CLI_ARGS="--dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official"
+# --dangerously-skip-permissions
+CLI_CMD="codex"
+CLI_ARGS="--no-alt-screen --profile full"
 
 PROJECT_DIR="${1:-$(pwd)}"
 PROJECT_DIR="$(realpath "$PROJECT_DIR")"
