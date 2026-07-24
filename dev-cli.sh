@@ -10,7 +10,7 @@
 set -euo pipefail
 
 # claude | codex | agy | opencode
-CLI_CMD="opencode"
+CLI_CMD="agy"
 CLI_ARGS=""
 
 PROJECT_DIR="${1:-$(pwd)}"
