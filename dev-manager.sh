@@ -49,19 +49,28 @@ list_sessions() {
     return 0
 }
 
+refresh() {
+    echo "Refreshing the session list..."
+    list_sessions
+}
+
 while list_sessions; do
     echo
-    printf 'Enter a session number to delete, or q to quit: '
+    printf 'Enter a session number to delete (q=quit, r=refresh): '
     if ! IFS= read -r choice; then
         echo
         exit 0
     fi
 
     case "$choice" in
-        q|Q)
+        r|R)
+            refresh
+            continue
+            ;;
+        q|Q|'')
             exit 0
             ;;
-        ''|*[!0-9]*)
+        *[!0-9]*)
             echo "Please enter a valid session number."
             continue
             ;;
