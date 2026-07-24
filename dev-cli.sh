@@ -9,14 +9,9 @@
 
 set -euo pipefail
 
-# claude
-# --dangerously-skip-permissions --channels plugin:telegram@claude-plugins-official
-# codex
-# --no-alt-screen --profile full
-# agy
-# --dangerously-skip-permissions
-CLI_CMD="codex"
-CLI_ARGS="--no-alt-screen --profile full"
+# claude | codex | agy | opencode
+CLI_CMD="opencode"
+CLI_ARGS=""
 
 PROJECT_DIR="${1:-$(pwd)}"
 PROJECT_DIR="$(realpath "$PROJECT_DIR")"
